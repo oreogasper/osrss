@@ -5,7 +5,7 @@ export let operators
 let countryToContinent = {};
 //changes for a test
 let guessedOperators = []
-let lastSolvedTimestamp 
+let lastSolvedTimestamp
 
 window.onload = async function() {
     const operatorResponse = await fetch('./operator.json');
@@ -31,22 +31,22 @@ window.onload = async function() {
     // Get the saved mode from localStorage
     let savedMode = localStorage.getItem('mode');
     let lastGuessedOp = localStorage.getItem('lastGuessedOp')
-    
+
     checkDailyStreak();
-    
+
     // Check if the last guessed Operator is equal to the current operator and if that is not true set dailyWon to false
     if (lastGuessedOp != operator[0].name || lastGuessedOp === null) {
         localStorage.setItem('dailyWon', 'false')
-        
+
         if (guessedOperators.length > 0) {
             localStorage.setItem('guessedOperators', [])
             guessedOperators = localStorage.getItem('guessedOperators')
         }
     }
-    
+
     // If a mode was saved, open that mode
     if (savedMode === 'daily') {
-        dailyMode();      
+        dailyMode();
     } else if (savedMode === 'endless') {
       endlessMode();
     } else {
@@ -77,7 +77,7 @@ function checkDailyStreak() {
 }
 
 
-    
+
 // Create a container for the keys
 let keysContainer = document.createElement('div');
 keysContainer.className = 'classic-answers-container';
@@ -87,7 +87,7 @@ let keysRow = document.createElement('div');
 keysRow.className = 'answer-titles square-container animate__animated animate__fadeIn';
 
 // Create boxes for the keys
-let keys = ['name', 'gender', 'role', 'side', 'country', 'Org', 'Squad', 'release_year'];
+let keys = ['name', 'solo level', 'hitpoints', 'attack Style', 'solo', 'release Year', 'a', 'a'];
 keys.forEach(key => {
     let box = document.createElement('div');
     box.className = 'square square-title';
@@ -115,7 +115,7 @@ function updateModeIndicator(mode) {
             endlessMode()
         }
         modeIndicator.appendChild(button)
-        
+
     }else if( mode == 'Endless'){
         let button = document.createElement('button')
         button.className = 'de_button'
@@ -171,9 +171,9 @@ window.dailyMode = function () {
     clear();
     if(localStorage.getItem('dailyWon') === 'true'){
         displayWinningScreen()
-        
+
     }
-   
+
     //Use guess and askForGuess as needed
 }
     // numbers
@@ -194,7 +194,7 @@ window.dailyMode = function () {
             }
             endlessGuesses++
             localStorage.setItem('endlessGuesses', endlessGuesses)
-        }    
+        }
         console.log('daily: ' + dailyGuesses + '  endless: ' + endlessGuesses)
         // Find the operator in the list
         const operator = operators.find(op => typeof op.name === 'string' && op.name.toLowerCase() === operatorName.toLowerCase());
@@ -261,7 +261,7 @@ window.dailyMode = function () {
 
         } else {
             if (sharedCriteria) {
-                console.log("🟠 The guessed operator shares some criteria with the operator to find."); 
+                console.log("🟠 The guessed operator shares some criteria with the operator to find.");
             } else {
                 console.log("🔴 The guessed operator does not share any criteria with the operator to find.");
             }
@@ -278,29 +278,29 @@ window.dailyMode = function () {
             const container = document.getElementById('answercon')
             let squarecontainer = document.createElement('div');
             squarecontainer.className = 'square-container'
-        
+
             // Create the image square first
             let imgSquare = document.createElement('div');
             imgSquare.className = 'square animate__animated animate__flipInY';
-        
+
             let img = document.createElement('img');
             img.src = `../images/r6s-operators-badge-${operatorName.toLowerCase()}.png`;
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
-        
+
             imgSquare.appendChild(img);
             imgSquare.classList.add('square-title')
             squarecontainer.appendChild(imgSquare);
-        
+
             keys.forEach(key => {
                 let square = document.createElement('div');
                 square.className = 'square animate__animated animate__flipInY';
-        
+
                 let content = document.createElement('div');
                 content.className = 'square-content';
 
-        
+
                 if (key === 'release_year') {
                     if (operator[key] < operatorToGuess[key]) {
                         square.classList.add('square-bad');
@@ -319,10 +319,10 @@ window.dailyMode = function () {
                 } else if (Array.isArray(operator[key]) && Array.isArray(operatorToGuess[key])) {
                     const normalizedOperatorRole = operator[key].join(',').split(',').map(role => role.trim()).sort().join(', ');
                     const normalizedOperatorToGuessRole = operatorToGuess[key].join(',').split(',').map(role => role.trim()).sort().join(', ');
-                
+
                     const normalizedOperatorRoleArray = normalizedOperatorRole.split(', ');
                     const normalizedOperatorToGuessRoleArray = normalizedOperatorToGuessRole.split(', ');
-                
+
                     if (normalizedOperatorRoleArray.every(role => normalizedOperatorToGuessRoleArray.includes(role)) &&
                         normalizedOperatorToGuessRoleArray.every(role => normalizedOperatorRoleArray.includes(role))) {
                         square.classList.add('square-good');
@@ -330,7 +330,7 @@ window.dailyMode = function () {
                         sharedCriteria = true;
                     } else {
                         const matchingRoles = operator[key].filter(role => normalizedOperatorToGuessRole.includes(role));
-                
+
                         if (matchingRoles.length > 0) {
                             square.classList.add('square-partial');
                             content.textContent = `${operator[key].join(", ")}`;
@@ -356,19 +356,19 @@ window.dailyMode = function () {
                 } else if (typeof operator[key] === 'string' && operator[key].includes(operatorToGuess[key])) {
                     square.classList.add('square-good');
                     content.textContent = `${operator[key]}`;
-                    
+
                 sharedCriteria = true;
             } else {
                 square.classList.add('square-bad');
                 content.textContent = `${operator[key]}`;
             }
-            
+
             square.appendChild(content);
             squarecontainer.appendChild(square);
-            
+
             });
 
-            
+
             answerclassic.appendChild(squarecontainer)
 
             // Insert the new result before the first child
@@ -388,14 +388,14 @@ window.dailyMode = function () {
                     localStorage.setItem('endlessGuesses', 0)
                     incrementGlobalSolved()
                     let input  = document.getElementById('inputField')
-                    input.disabled = true   
+                    input.disabled = true
                 }
                 displayWinningScreen();
-                
+
             }
             return sharedCriteria;
         }
-    
+
 
         // Get the first object from the output
         let result = operator;
@@ -460,7 +460,7 @@ function displayWinningScreen() {
     img.src = `../images/r6s-operators-badge-${operatorName.toLowerCase()}.png`;
     firstInnerDiv.appendChild(img);
 
-    
+
 
     // Create the second inner div
     let secondInnerDiv = document.createElement('div');
@@ -481,7 +481,7 @@ function displayWinningScreen() {
     ggNameDiv.innerHTML = operatorToGuess.name; // Replace with the actual operator name
     secondInnerDiv.appendChild(ggNameDiv); // Append the gg-name div to the second inner div
 
-    
+
     // Create the nthtries div
     let nthTriesDiv = document.createElement('div');
     nthTriesDiv.className = 'nthtries';
@@ -515,7 +515,7 @@ function displayWinningScreen() {
     countdownTime.id = 'countdown';
     countdown.appendChild(countdownTime);
 
-    
+
 
     // Update the countdown every 1 second
     let countdownInterval = setInterval(function() {
@@ -533,7 +533,7 @@ function displayWinningScreen() {
         // Update the countdownTime innerHTML
         countdownTime.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
 
-        // If the count down is finished, write some text 
+        // If the count down is finished, write some text
         if (distance < 0) {
             clearInterval(countdownInterval);
             countdownTime.innerHTML = "Refresh the site to get the new operator";
@@ -542,7 +542,7 @@ function displayWinningScreen() {
 
     // Append the elements to their parents
     ggAnswerDiv.appendChild(firstInnerDiv);
-    ggAnswerDiv.appendChild(secondInnerDiv); 
+    ggAnswerDiv.appendChild(secondInnerDiv);
     backgroundEndDiv.appendChild(ggDiv);
     backgroundEndDiv.appendChild(ggAnswerDiv);
     backgroundEndDiv.appendChild(nthTriesDiv);
@@ -558,10 +558,10 @@ function displayWinningScreen() {
     endId.appendChild(finishedDiv);
     restartButton();
 }
-     
-    
 
-    
+
+
+
 
 function askForGuess() {
     // Get the button element
@@ -579,25 +579,25 @@ function askForGuess() {
             var inputField = document.getElementById('inputField');
              // Select the input field content
              inputField.select();
- 
+
              // Get the input field value
              var userInput = inputField.value;
- 
+
              // Check if the operator has already been guessed or empty or does not exist
             if (guessedOperators.includes(userInput) || userInput === "") {
                 console.log('This operator has already been guessed.');
                 return; // Exit the function early
             } else if (userInput === "") {
             console.log('InputField was empty.');
-            return; 
+            return;
             } else if (!operatorNames.includes(userInput)) {
             console.log('This operator does not exist.');
-            return; 
+            return;
             }
- 
+
              // Add the operator to the array of guessed operators
              guessedOperators.push(userInput);
- 
+
              // Now you can use the userInput value in your code
              guess(userInput);
     });
@@ -613,10 +613,10 @@ function askForGuess() {
             return; // Exit the function early
         } else if (userInput === "") {
            console.log('InputField was empty.');
-           return; 
+           return;
         } else if (!operatorNames.includes(userInput)) {
            console.log('This operator does not exist.');
-           return; 
+           return;
         }
 
         // Add the operator to the array of guessed operators
@@ -666,7 +666,7 @@ function displayStreak() {
     var streakDisplay = document.getElementById('streakDisplay');
     var dataDailyStreak = document.getElementById('alreadyDailySolved');
     var dataGlobalSolvedEndless = document.getElementById('globalSolvedEndless');
-    
+
     // Show the 'streakDisplay' element
     streakDisplay.style.display = '';
     // If there's no current streak, this is the user's first visit
@@ -687,8 +687,8 @@ function displayStreak() {
 
     dataGlobalSolvedEndless.style.display = ''
     dataGlobalSolvedEndless.innerHTML = 'The endless mode was already solved times'
-    
-    
+
+
 }
 
 function displayDailyStreak() {
@@ -832,7 +832,7 @@ function restartButton() {
             operatorToGuess = setOperatorToGuess()
             endlessGuesses = 0
             let input  = document.getElementById('inputField')
-                    input.disabled = false 
+                    input.disabled = false
             clear()
             var event = new CustomEvent('clearUsedNames');
             window.dispatchEvent(event);
@@ -860,7 +860,7 @@ function clear() {
     endId.innerHTML = ''
 }
 
-   
+
 
 
 
@@ -905,4 +905,4 @@ export function getGuessedOperators() {
         guessedOperators = [];
     }
     return guessedOperators;
-} 
+}
